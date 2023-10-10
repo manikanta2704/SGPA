@@ -19,46 +19,6 @@ grade_points = {
     "F": 0,
 }
 
-# Custom CSS styling for the app
-st.markdown(
-    """
-    <style>
-    body {
-        background-color: #f0f0f0;
-    }
-    .stApp {
-        max-width: 600px;
-        margin: 0 auto;
-    }
-    .stButton button {
-        background-color: #007BFF;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        padding: 10px 20px;
-        cursor: pointer;
-    }
-    .stButton button:hover {
-        background-color: #0056b3;
-    }
-    .result-box {
-        padding: 20px;
-        margin-top: 20px;
-        border: 2px solid #ddd;
-        border-radius: 5px;
-        background-color: #fff;
-    }
-    .pass {
-        color: green;
-    }
-    .fail {
-        color: red;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-
 # Streamlit app title and heading
 st.title("SGPA & CGPA Calculator")
 st.header("Calculate SGPA")
@@ -78,22 +38,61 @@ for i in range(num_subjects):
 # Calculate SGPA
 if st.button("Calculate SGPA"):
     sgpa = calculate_sgpa(grades, credits)
-    st.markdown("<div class='result-box'>", unsafe_allow_html=True)
-    st.markdown(f"<p>SGPA: <span class='sgpa'>{sgpa:.2f}</span></p>", unsafe_allow_html=True)
+    st.success(f"SGPA: {sgpa:.2f}")
     
     # Check if the student passed or failed
     if 'F' not in grades:
-        st.markdown("<p class='pass'>Result: Pass</p>", unsafe_allow_html=True)
+        st.success("Result: Pass")
     else:
-        st.markdown("<p class='fail'>Result: Fail</p>", unsafe_allow_html=True)
+        st.error("Result: Fail")
+        
+    # Animate the result message
+    st.write('<style>div.row-widget.stRadio > div{flex-direction:column;}</style>', unsafe_allow_html=True)
+    with st.spinner('Calculating...'):
+        time.sleep(2)
+        st.balloons()
     
     # Show percentage equivalent
     total_points = sum(grade_points[g] * c for g, c in zip(grades, credits))
     max_possible = sum(max(grade_points.values()) * c for c in credits)
     percentage = (total_points / max_possible) * 100
-    st.markdown(f"<p>Percentage Equivalent: {percentage:.2f}%</p>", unsafe_allow_html=True)
-    st.markdown("</div>", unsafe_allow_html=True)
+    st.write(f"Percentage Equivalent: {percentage:.2f}%")
+
+# Calculate CGPA
+st.header("Calculate CGPA")
+num_semesters = st.number_input("Number of Semesters", min_value=1, max_value=8, value=1)
+
+sgpas = []
+for i in range(num_semesters):
+    sgpa = st.number_input(f"Enter SGPA for Semester {i + 1}", min_value=0.0, max_value=10.0, value=9.0)
+    sgpas.append(sgpa)
+
+if st.button("Calculate CGPA"):
+    cgpa = mean(sgpas)
+    st.success(f"CGPA: {cgpa:.2f}")
     
     # Animate the result message
-    st.markdown('<style>div.result-box{animation: fadeIn 2s;}</style>', unsafe_allow_html=True)
-    st.markdown('<script>setTimeout(function() {document.querySelector(".result-box").style.animation = "fadeOut 2s";}, 4000);</script>', unsafe_allow_html=True)
+    with st.spinner('Calculating...'):
+        time.sleep(2)
+        st.balloons()
+
+    # Show percentage equivalent
+    total_points = sum(credits)
+    max_possible = total_points * max(grade_points.values())
+    percentage = (total_points / max_possible) * 100
+    st.write(f"Percentage Equivalent: {percentage:.2f}%")
+
+# Footer with instructions
+st.markdown("""
+<style>
+.footer {
+    text-align: center;
+    font-size: 14px;
+    padding: 10px;
+}
+</style>
+<div class="footer">
+    <p>Enter SGPA as a decimal (e.g., 9.5 for A+)</p>
+    <p>For CGPA, enter the SGPA for each semester.</p>
+</div>
+""", unsafe_allow_html=True)
