@@ -64,14 +64,14 @@ st.title("SGPA & CGPA Calculator")
 st.header("Calculate SGPA")
 
 # Create inputs for subject grades and credits
-num_subjects = st.number_input("Number of Subjects", min_value=1, max_value=8, value=1)
+num_subjects = st.number_input("Number of Subjects", min_value=1, max_value=9, value=1)
 
 grades = []
 credits = []
 
 for i in range(num_subjects):
     grade = st.selectbox(f"Select Grade for Subject {i + 1}", list(grade_points.keys()))
-    credit = st.selectbox(f"Select Credits for Subject {i + 1}", [1, 1.5, 2])
+    credit = st.selectbox(f"Select Credits for Subject {i + 1}", [3, 2, 1.5])
     grades.append(grade)
     credits.append(credit)
 
