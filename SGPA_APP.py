@@ -64,76 +64,36 @@ st.title("SGPA & CGPA Calculator")
 st.header("Calculate SGPA")
 
 # Create inputs for subject grades and credits
-num_subjects = st.number_input("Number of Subjects", min_value=1, max_value=9, value=1)
+num_subjects = st.number_input("Number of Subjects", min_value=1, max_value=8, value=1)
 
 grades = []
 credits = []
 
 for i in range(num_subjects):
     grade = st.selectbox(f"Select Grade for Subject {i + 1}", list(grade_points.keys()))
-    credit = st.selectbox(f"Select Credits for Subject {i + 1}", [1.5, 2, 3])
+    credit = st.selectbox(f"Select Credits for Subject {i + 1}", [1, 1.5, 2])
     grades.append(grade)
     credits.append(credit)
 
 # Calculate SGPA
 if st.button("Calculate SGPA"):
     sgpa = calculate_sgpa(grades, credits)
-    st.write("<div class='result-box'>", unsafe_allow_html=True)
-    st.write(f"<p>SGPA: <span class='sgpa'>{sgpa:.2f}</span></p>")
+    st.markdown("<div class='result-box'>", unsafe_allow_html=True)
+    st.markdown(f"<p>SGPA: <span class='sgpa'>{sgpa:.2f}</span></p>", unsafe_allow_html=True)
     
     # Check if the student passed or failed
     if 'F' not in grades:
-        st.write("<p class='pass'>Result: Pass</p>")
+        st.markdown("<p class='pass'>Result: Pass</p>", unsafe_allow_html=True)
     else:
-        st.write("<p class='fail'>Result: Fail</p>")
+        st.markdown("<p class='fail'>Result: Fail</p>", unsafe_allow_html=True)
     
     # Show percentage equivalent
     total_points = sum(grade_points[g] * c for g, c in zip(grades, credits))
     max_possible = sum(max(grade_points.values()) * c for c in credits)
     percentage = (total_points / max_possible) * 100
-    st.write(f"<p>Percentage Equivalent: {percentage:.2f}%</p>")
-    st.write("</div>", unsafe_allow_html=True)
+    st.markdown(f"<p>Percentage Equivalent: {percentage:.2f}%</p>", unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
     
     # Animate the result message
-    st.write('<style>div.result-box{animation: fadeIn 2s;}</style>', unsafe_allow_html=True)
-    st.write('<script>setTimeout(function() {document.querySelector(".result-box").style.animation = "fadeOut 2s";}, 4000);</script>', unsafe_allow_html=True)
-    
-# Calculate CGPA
-st.header("Calculate CGPA")
-num_semesters = st.number_input("Number of Semesters", min_value=1, max_value=8, value=1)
-
-sgpas = []
-for i in range(num_semesters):
-    sgpa = st.number_input(f"Enter SGPA for Semester {i + 1}", min_value=0.0, max_value=10.0, value=9.0)
-    sgpas.append(sgpa)
-
-if st.button("Calculate CGPA"):
-    cgpa = mean(sgpas)
-    st.write("<div class='result-box'>", unsafe_allow_html=True)
-    st.write(f"<p>CGPA: <span class='cgpa'>{cgpa:.2f}</span></p>")
-    
-    # Animate the result message
-    st.write('<style>div.result-box{animation: fadeIn 2s;}</style>', unsafe_allow_html=True)
-    st.write('<script>setTimeout(function() {document.querySelector(".result-box").style.animation = "fadeOut 2s";}, 4000);</script>', unsafe_allow_html=True)
-    
-    # Show percentage equivalent
-    total_points = sum(credits)
-    max_possible = total_points * max(grade_points.values())
-    percentage = (total_points / max_possible) * 100
-    st.write(f"<p>Percentage Equivalent: {percentage:.2f}%</p>")
-    st.write("</div>", unsafe_allow_html=True)
-
-# Footer with instructions
-st.markdown("""
-<style>
-.footer {
-    text-align: center;
-    font-size: 14px;
-    padding: 10px;
-}
-</style>
-<div class="footer">
-    <p>Enter SGPA as a decimal (e.g., 9.5 for A+)</p>
-    <p>For CGPA, enter the SGPA for each semester.</p>
-</div>
-""", unsafe_allow_html=True)
+    st.markdown('<style>div.result-box{animation: fadeIn 2s;}</style>', unsafe_allow_html=True)
+    st.markdown('<script>setTimeout(function() {document.querySelector(".result-box").style.animation = "fadeOut 2s";}, 4000);</script>', unsafe_allow_html=True)
